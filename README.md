@@ -1,71 +1,56 @@
 ﻿# Better Allowlist
 
-This is a simple allowlist for TShock. It allows you to specify a list of users by IP, UUID, or Character Name, or combination of all 3.
+The Better Allowlist is a plugin for TShock that allows you to manage a list of allowed players based on their IP, UUID, or Character Name, or any combination of these criteria.
 
 ## Command Reference
 
-### Add
+- **Add**: Adds a player's IP, UUID, Name, or all 3 to the allowlist.
+  ```
+  /allowlist add [ip/uuid/name/all] <player-name>
+  ```
 
-Adds a player's IP, UUID, Name, or all 3 to the allowlist.
+- **Remove**: Remove a player from the allowlist using their name.
+  ```
+  /allowlist remove <player-name>
+  ```
 
-```
-/allowlist add [ip/uuid/name/all] <player-name>
-```
+- **Reload**: Reload the allowlist from the file.
+  ```
+  /allowlist reload
+  ```
 
-### Remove
+- **List**: View all players currently on the allowlist.
+  ```
+  /allowlist list
+  ```
 
-Remove a player from the list by name.
+- **Enable / Disable**: Enable or disable the allowlist as needed.
+  ```
+  /allowlist [enable/disable]
+  ```
 
-```
-/allowlist remove <player-name>
-```
+## Example Configuration
 
-### Reload 
+Below is an example of the configuration file, `allowlist-config.json`:
 
-Reloads the allowlist from the file.
-
-```
-/allowlist reload
-```
-
-### List
-
-Lists all players on the allowlist.
-
-```
-/allowlist list
-```
-
-### Enable / Disable
-
-Enables or disables the allowlist.
-
-```
-/allowlist [enable/disable]
-```
-
-
-## Example config
-
-### allowlist-config.json
 ```json
 {
   "enabled": true,
   "allowList": [
     {
-      // IP only
+      // Only IP
       "ip": ""
     },
     {
-      // UUID only
+      // Only UUID
       "uuid": ""
     },
     {
-      // Name only
+      // Only Name
       "name": ""
     },
     {
-      // Requires all 3 to match to be allowed
+      // All 3 criteria required for access
       "ip": "127.0.0.1",
       "uuid": "SOMEVERYLONGSTRINGOFCHARACTERSANDNUMBERSHERE",
       "name": "loganintech"
@@ -74,3 +59,5 @@ Enables or disables the allowlist.
   "removalReason": "You are not on the allowlist."
 }
 ```
+
+With the Better Allowlist plugin, managing access to your TShock server becomes more convenient and flexible. By utilizing IPs, UUIDs, and Character Names, or any combination of these, you can efficiently control who can join your server.
