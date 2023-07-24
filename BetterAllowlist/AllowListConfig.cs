@@ -17,15 +17,9 @@ class AllowListConfig
         allowList.Add(entry);
     }
 
-    public int RemoveAllMatches(AllowListEntry entry)
+    public int RemoveAllMatches(string name)
     {
-        var removed = allowList.RemoveAll(val => val.Matches(entry));
-        if (removed == 0)
-        {
-            return 0;
-        }
-
-        return removed;
+        return allowList.RemoveAll(val => val.name == name);
     }
 
     public string StringifyEntries()

@@ -19,13 +19,14 @@ public class BetterAllowlist : TerrariaPlugin
     public override string Author => "loganintech";
     public override string Description => "Implement a whitelist based on UUID, Character Name, or IP";
     public override string Name => "Better Allowlist";
-    public override Version Version => new Version(0, 0, 1, 0);
+    public override Version Version => new Version(0, 0, 1, 1);
 
     private readonly string _properSyntax =
         "Proper syntax:\n" +
-        "/allowlist [add/remove] [ip/name/uuid/all] <value> - Add or remove players type entry based on player name.\n" +
+        "/allowlist add [ip/name/uuid/all] <player-name> - Add or remove players type entry based on player name.\n" +
         "This means that /allowlist add ip Logan would add Logan's IP adddress.\n" +
         "For custom entry of these values, edit the config file directly.\n" +
+        "/allowlist remove <player-name> - Remove player from allowlist.\n" +
         "/allowlist reload\n" +
         "/allowlist list\n" +
         "/allowlist enable\n" +
@@ -50,7 +51,7 @@ public class BetterAllowlist : TerrariaPlugin
         Permissions.kick,
         Permissions.immunetokick,
     };
-    
+
     public BetterAllowlist(Main game) : base(game)
     {
         _config = new AllowListConfig();
@@ -118,7 +119,7 @@ public class BetterAllowlist : TerrariaPlugin
 
             return;
         }
-        
+
         ManageEntry(player, args.Parameters);
     }
 
@@ -129,48 +130,52 @@ public class BetterAllowlist : TerrariaPlugin
             player.SendInfoMessage("No entries in allowlist.");
             return;
         }
+
         player.SendSuccessMessage(_config.StringifyEntries());
     }
 
     // Allowlist [add/remove] [ip/name/uuid] <value>
     public void ManageEntry(TSPlayer player, List<string> args)
     {
-        
-        if (args.Count != 3)
+        if (args.Count < 2)
         {
             player.SendErrorMessage($"Invalid syntax! {_properSyntax}");
             return;
         }
 
         string action = args[0];
+        if (action == "remove")
+        {
+            RemoveEntry(player, args[1]);
+            return;
+        }
+
         string type = args[1];
-        string value = args[2];
+        string targetPlayerName = args[2];
 
         if (!AllowedFilterTypes.Contains(type))
         {
             player.SendErrorMessage($"Invalid syntax: {type} is not a valid type! {_properSyntax}");
             return;
         }
-        
-        AllowListEntry entry = new AllowListEntry(type, value);
-        switch (action)
+
+        AllowListEntry entry = new AllowListEntry(type, targetPlayerName);
+        _config.Add(entry);
+        Write();
+        player.SendSuccessMessage($"Added entry to allowlist.");
+    }
+
+    public void RemoveEntry(TSPlayer player, string targetPlayer)
+    {
+        var removed = _config.RemoveAllMatches(targetPlayer);
+        if (removed == 0)
         {
-            case "add":
-                _config.Add(entry);
-                Write();
-                player.SendSuccessMessage($"Added entry to allowlist.");
-                break;
-            case "remove":
-                var removed = _config.RemoveAllMatches(entry);
-                if (removed == 0)
-                {
-                    player.SendErrorMessage("Could not remove that value, no matches were found.");
-                    return;
-                }
-                Write();
-                player.SendSuccessMessage($"Removed {removed} matching entries from the allowlist.");
-                break;
+            player.SendErrorMessage("Could not remove that value, no matches were found.");
+            return;
         }
+
+        Write();
+        player.SendSuccessMessage($"Removed {removed} matching entries from the allowlist.");
     }
 
 
@@ -213,8 +218,15 @@ public class BetterAllowlist : TerrariaPlugin
 
     public void Write()
     {
-        var jsonConfig = JsonConvert.SerializeObject(_config, serializeOpts);
-        File.WriteAllText(TShockConfigPath, jsonConfig);
+        try
+        {
+            var jsonConfig = JsonConvert.SerializeObject(_config, serializeOpts);
+            File.WriteAllText(TShockConfigPath, jsonConfig);
+        }
+        catch (Exception e)
+        {
+            Log($"Write: Exception happened writing config {e.Message}");
+        }
     }
 
     // Reload from disk
