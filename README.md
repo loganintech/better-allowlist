@@ -33,7 +33,7 @@ The Better Allowlist is a plugin for TShock that allows you to manage a list of 
 
 Below is an example of the configuration file, `allowlist-config.json`:
 
-```json
+```json5
 {
   "enabled": true,
   "allowList": [
