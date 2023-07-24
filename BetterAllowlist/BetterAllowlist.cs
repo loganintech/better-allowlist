@@ -71,6 +71,17 @@ public class BetterAllowlist : TerrariaPlugin
             Write();
         }
     }
+    
+    protected override void Dispose(bool disposing)
+    {
+        if (disposing)
+        {
+            ServerApi.Hooks.ServerJoin.Deregister(this, OnJoin);
+        }
+
+        Commands.ChatCommands.RemoveAll(cmd => cmd.HasAlias("allowlist"));
+        base.Dispose(disposing);
+    }
 
     public void CommandHandler(CommandArgs args)
     {
