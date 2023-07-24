@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BetterWhitelist", "BetterWhitelist\BetterWhitelist.csproj", "{D85B0599-5683-4FCB-A69C-3E8B89A8F450}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BetterAllowlist", "BetterAllowlist\BetterAllowlist.csproj", "{D85B0599-5683-4FCB-A69C-3E8B89A8F450}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
